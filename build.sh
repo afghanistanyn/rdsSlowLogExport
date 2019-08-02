@@ -10,7 +10,7 @@ build() {
 
 package () {
     if [ -f "bin/rdsSlowLogExport" ];then
-        tar vczf rdsSlowLogExport.tar.gz zbin/ conf/ doc/ export/
+        tar vczf rdsSlowLogExport.tar.gz bin/ etc/
     else
         echo "build faild"
         exit -1
