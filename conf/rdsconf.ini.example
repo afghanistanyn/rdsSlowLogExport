@@ -1,0 +1,16 @@
+[rds]
+regionId="cn-hangzhou"
+accessKeyId="xxx"
+accessSecret="xxx"
+dbInstanceId="xxx"
+
+[output]
+output_dir="/data/rds/data/rds/slowlogexport/"
+output_prefix="slowlog-"
+output_xlsx="true"
+; use to remove slow sql in db that you not interested, go regex format
+exclude_dbs="abc|cde"
+; export record from how manys days ago, include today
+export_time_offset=1
+; use to convert ExecutionStartTime to cst, options [utc,cst] , utc by default
+export_sql_exec_timezone="cst"

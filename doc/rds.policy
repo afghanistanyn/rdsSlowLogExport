@@ -1,0 +1,15 @@
+{
+  "Statement": [
+    {
+      "Action": "rds:Describe*",
+      "Effect": "Allow",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "acs:SourceIp": "xxx.xxx.xxx.xxx"
+        }
+      }
+    }
+  ],
+  "Version": "1"
+}

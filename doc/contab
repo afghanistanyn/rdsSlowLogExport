@@ -1,0 +1,1 @@
+59 23 * * * rdsSlowLogExport -c /root/.rds/rdsconf.ini
