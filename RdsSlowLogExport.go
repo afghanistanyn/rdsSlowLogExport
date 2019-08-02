@@ -32,7 +32,7 @@ var (
 func init() {
 	flag.BoolVar(&help, "h", false, "this help")
 	flag.BoolVar(&debug, "d", false, "show verbose info")
-	flag.StringVar(&confPath, "c", "../conf/rdsconf.ini", "set configuration `file`")
+	flag.StringVar(&confPath, "c", "/usr/local/etc/rdsconf.ini", "set configuration `file`")
 }
 
 func main() {
