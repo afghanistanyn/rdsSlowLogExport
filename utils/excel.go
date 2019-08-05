@@ -31,7 +31,7 @@ func Csv2excel(file2c string) (ok bool, err error) {
 
 	buf := bufio.NewReader(csv)
 	var myReg = new(MyReg)
-	myReg.Reg = regexp.MustCompile(`[;]`)
+	myReg.Reg = regexp.MustCompile(`;`)
 
 	for {
 		line, err := buf.ReadString('\n')

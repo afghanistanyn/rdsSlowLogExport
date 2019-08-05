@@ -18,6 +18,7 @@ type Conf struct {
 	ExcludeDBs            string
 	ExportTimeOffset      string
 	ExportSQLExecTimezone string
+	QueryTimesThreshold   int64
 }
 
 func NewConf(confpath string, rdsSection string, outputSection string) (conf *Conf, err error) {
@@ -41,6 +42,13 @@ func NewConf(confpath string, rdsSection string, outputSection string) (conf *Co
 	conf.ExcludeDBs = ini_parser.GetString(outputSection, "exclude_dbs")
 	conf.ExportTimeOffset = ini_parser.GetString(outputSection, "export_time_offset")
 	conf.ExportSQLExecTimezone = ini_parser.GetString(outputSection, "export_sql_exec_timezone")
+	queryTimesThreshold := ini_parser.GetString(outputSection, "export_querytimes_threshold")
+
+	if queryTimesThreshold == "" {
+		conf.QueryTimesThreshold = 1
+	} else {
+		conf.QueryTimesThreshold, err = strconv.ParseInt(queryTimesThreshold, 10, 8)
+	}
 
 	return conf, nil
 }

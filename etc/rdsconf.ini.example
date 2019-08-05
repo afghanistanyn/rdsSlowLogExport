@@ -14,3 +14,5 @@ exclude_dbs="abc|cde"
 export_time_offset=1
 ; use to convert ExecutionStartTime to cst, options [utc,cst] , utc by default
 export_sql_exec_timezone="cst"
+; querytimes threshold, remove the revord less than querytimes_threshold , leave blank to use default value 1.
+export_querytimes_threshold="2"
