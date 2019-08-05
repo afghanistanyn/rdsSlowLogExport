@@ -1,5 +1,7 @@
 github.com/afghanistanyn/json2csv v0.1.3 h1:omiqpW0+7hASucOzCZtEcCX+ROUnzdTa/EuArh5Z3qM=
 github.com/afghanistanyn/json2csv v0.1.3/go.mod h1:TjlQdghO2yXpL0zQuK6zd0FdjXfzGcNBd/cuYc/6P9o=
+github.com/afghanistanyn/json2csv v0.1.4 h1:zy79Icj+p30jQr8nNYZhjHcEljoRJej+Y04rj0MBckM=
+github.com/afghanistanyn/json2csv v0.1.4/go.mod h1:TjlQdghO2yXpL0zQuK6zd0FdjXfzGcNBd/cuYc/6P9o=
 github.com/aliyun/alibaba-cloud-sdk-go v0.0.0-20190802060951-4be6a15ed2ed h1:0Xx7EUUjx/rxYckbsZ/8n+0fpicaYUGN+b7WmtlwhmI=
 github.com/aliyun/alibaba-cloud-sdk-go v0.0.0-20190802060951-4be6a15ed2ed/go.mod h1:myCDvQSzCW+wB1WAlocEru4wMGJxy+vlxHdhegi1CDQ=
 github.com/aliyun/aliyun-oss-go-sdk v0.0.0-20190307165228-86c17b95fcd5/go.mod h1:T/Aws4fEfogEE9v+HPhhw+CntffsBHJ8nXQCwKr0/g8=

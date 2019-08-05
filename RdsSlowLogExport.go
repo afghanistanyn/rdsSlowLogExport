@@ -186,9 +186,9 @@ func handleRecords(records []rds.SQLSlowRecord, excludeDbsPattern *regexp.Regexp
 	}
 
 	if debug {
-		log.Println("Try to remove the Records that QueryTimes less than 2 sec")
+		log.Printf("Try to remove the Records that QueryTimes less than %d sec\n", queryTimesThreshold)
 	}
-	//remove records that QueryTimes less than `` sec
+	//remove records that QueryTimes less than `queryTimesThreshold` sec
 	for i := len(records) - 1; i >= 0; i-- {
 		if records[i].QueryTimes < queryTimesThreshold {
 			records = append(records[:i], records[i+1:]...)
