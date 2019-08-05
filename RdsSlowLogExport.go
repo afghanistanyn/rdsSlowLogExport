@@ -95,7 +95,7 @@ func main() {
 	}
 
 	SQLSlowRecords := response.Items.SQLSlowRecord
-	SlowRecords := handleRecords(SQLSlowRecords, excludeDbsPattern, removeExcludeDBRecord, convert2CST)
+	SlowRecords := handleRecords(SQLSlowRecords, excludeDbsPattern, removeExcludeDBRecord, convert2CST, conf.QueryTimesThreshold)
 
 	var dateFormat = "2006-01-02"
 	var outputFileFormat = "%s.csv"
@@ -106,7 +106,11 @@ func main() {
 	_ = os.Mkdir(conf.OutputPath, os.ModeDir)
 
 	//the first page
-	utils.Save2csv(SlowRecords, outputFilePath, false)
+	err = utils.Save2csv(SlowRecords, outputFilePath, false)
+	if err != nil {
+		log.Fatalf("err occur when write csv: %s\n", err)
+		os.Exit(-1)
+	}
 
 	var fetchCount int
 	func() {
@@ -140,8 +144,12 @@ func main() {
 		}
 		SQLSlowRecords := response.Items.SQLSlowRecord
 		//the first page , did not ignore header
-		SlowRecords = handleRecords(SQLSlowRecords, excludeDbsPattern, removeExcludeDBRecord, convert2CST)
-		utils.Save2csv(SlowRecords, outputFilePath, true)
+		SlowRecords = handleRecords(SQLSlowRecords, excludeDbsPattern, removeExcludeDBRecord, convert2CST, conf.QueryTimesThreshold)
+		err := utils.Save2csv(SlowRecords, outputFilePath, true)
+		if err != nil {
+			log.Fatalf("err occurd when write csv: %s\n", err)
+			os.Exit(-1)
+		}
 	}
 
 	if conf.ExportXlsx() {
@@ -157,7 +165,7 @@ func main() {
 	}
 }
 
-func handleRecords(records []rds.SQLSlowRecord, excludeDbsPattern *regexp.Regexp, removeExcludeDBRecord bool, convert2CST bool) []map[string]interface{} {
+func handleRecords(records []rds.SQLSlowRecord, excludeDbsPattern *regexp.Regexp, removeExcludeDBRecord bool, convert2CST bool, queryTimesThreshold int64) []map[string]interface{} {
 
 	if removeExcludeDBRecord {
 		//remove record for exclude dbs
@@ -180,9 +188,9 @@ func handleRecords(records []rds.SQLSlowRecord, excludeDbsPattern *regexp.Regexp
 	if debug {
 		log.Println("Try to remove the Records that QueryTimes less than 2 sec")
 	}
-	//remove records that QueryTimes less than 2 sec
+	//remove records that QueryTimes less than `` sec
 	for i := len(records) - 1; i >= 0; i-- {
-		if records[i].QueryTimes < 2 {
+		if records[i].QueryTimes < queryTimesThreshold {
 			records = append(records[:i], records[i+1:]...)
 		}
 	}
