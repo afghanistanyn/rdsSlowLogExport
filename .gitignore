@@ -1,3 +1,4 @@
 etc/rdsconf.ini
 vendor
 bin/*
+.idea

@@ -94,6 +94,7 @@ func main() {
 		log.Printf("Request Params: %s\n", request.GetQueryParams())
 	}
 
+	var globalHaveHeader = false
 	SQLSlowRecords := response.Items.SQLSlowRecord
 	SlowRecords := handleRecords(SQLSlowRecords, excludeDbsPattern, removeExcludeDBRecord, convert2CST, conf.QueryTimesThreshold)
 
@@ -105,11 +106,18 @@ func main() {
 	//mkdir outputPath
 	_ = os.Mkdir(conf.OutputPath, os.ModeDir)
 
-	//the first page
-	err = utils.Save2csv(SlowRecords, outputFilePath, false)
-	if err != nil {
-		log.Fatalf("err occur when write csv: %s\n", err)
-		os.Exit(-1)
+	if len(SlowRecords) != 0 {
+		globalHaveHeader = true
+		err = utils.Save2csv(SlowRecords, outputFilePath, false)
+		if err != nil {
+			log.Fatalf("err occur when write csv: %s\n", err)
+			os.Exit(-1)
+		}
+	} else {
+		//the first page is blank
+		//write blank file
+		log.Println("the first page is blank")
+
 	}
 
 	var fetchCount int
@@ -145,19 +153,38 @@ func main() {
 		SQLSlowRecords := response.Items.SQLSlowRecord
 		//the first page , did not ignore header
 		SlowRecords = handleRecords(SQLSlowRecords, excludeDbsPattern, removeExcludeDBRecord, convert2CST, conf.QueryTimesThreshold)
-		err := utils.Save2csv(SlowRecords, outputFilePath, true)
-		if err != nil {
-			log.Fatalf("err occurd when write csv: %s\n", err)
-			os.Exit(-1)
+
+		if len(SlowRecords) == 0 {
+			continue
+		}
+
+		//如果前面均未添加头部, 则添加表头 , ignoreHeader=false
+		if globalHaveHeader {
+			err := utils.Save2csv(SlowRecords, outputFilePath, true)
+			if err != nil {
+				log.Fatalf("err occurd when write csv: %s\n", err)
+				os.Exit(-1)
+			}
+		} else {
+			err := utils.Save2csv(SlowRecords, outputFilePath, false)
+			if err != nil {
+				log.Fatalf("err occurd when write csv: %s\n", err)
+				os.Exit(-1)
+			}
+			globalHaveHeader = true
 		}
 	}
 
-	if conf.ExportXlsx() {
+	//check csv exist
+
+	if conf.ExportXlsx() && IsExist(outputFilePath) {
 		_, err = utils.Csv2excel(outputFilePath)
 		if err != nil {
 			log.Printf("convert csv to excel error %s \n", err)
 			os.Exit(-1)
 		}
+	} else {
+		log.Println("No file generated")
 	}
 
 	if debug {
@@ -166,10 +193,8 @@ func main() {
 }
 
 func handleRecords(records []rds.SQLSlowRecord, excludeDbsPattern *regexp.Regexp, removeExcludeDBRecord bool, convert2CST bool, queryTimesThreshold int64) []map[string]interface{} {
-
+	//remove record for exclude dbs
 	if removeExcludeDBRecord {
-		//remove record for exclude dbs
-
 		if debug {
 			log.Println("Try to remove the Records match exclude_dbs")
 		}
@@ -224,4 +249,9 @@ func handleRecords(records []rds.SQLSlowRecord, excludeDbsPattern *regexp.Regexp
 	// the json data to convert must be a map or slice , can't be stuct
 	// so convert SQLSlowRecords(struct) to SlowRecords ([]map)
 	return SlowRecords
+}
+
+func IsExist(f string) bool {
+	_, err := os.Stat(f)
+	return err == nil || os.IsExist(err)
 }
