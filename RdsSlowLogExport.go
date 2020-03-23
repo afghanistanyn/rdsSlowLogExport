@@ -105,6 +105,7 @@ func main() {
 
 	//mkdir outputPath
 	_ = os.Mkdir(conf.OutputPath, os.ModeDir)
+	_ = os.Remove(outputFilePath)
 
 	if len(SlowRecords) != 0 {
 		globalHaveHeader = true
